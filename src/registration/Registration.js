@@ -59,7 +59,7 @@ const RegistrationForm = () => {
         />
       </div>
       <div className="form-group">
-        <label htmlFor="phonenumber">Email:</label>
+        <label htmlFor="phonenumber">Phone Number:</label>
         <input
           type="phonenumber"
           name="phonenumber"
