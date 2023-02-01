@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./registration.scss";
-const RegistrationForm = () => {
+const Registration = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -37,7 +37,7 @@ const RegistrationForm = () => {
 
   return (
     <form onSubmit={handleSubmit} className="registration-form">
-      <h2 className="form-title">Registration Form</h2>
+      <h2 className="form-title">Sign Up</h2>
       <div className="form-group">
         <label htmlFor="username">Username:</label>
         <input
@@ -85,4 +85,4 @@ const RegistrationForm = () => {
   );
 };
 
-export default RegistrationForm;
+export default Registration;

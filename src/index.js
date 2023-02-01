@@ -1,13 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
 import './index.css';
-import Registration from "./registration/Registration";
+import Router from "./Router";
 
 ReactDOM.render(
   <React.StrictMode>
-    <Registration />
-    <App/>
+    <Router/>
   </React.StrictMode>,
   document.getElementById('root')
 );
