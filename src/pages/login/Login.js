@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import { GoogleLogin } from "react-google-login";
 import './login.scss';
+import { useNavigate } from "react-router-dom";
 
-export default function Login() {
+export default function Login(props) {
+  const history = useNavigate();
+
   const [formData, setFormData] = useState({
-    name: "",
     email: "",
-    phonenumber: "",
     password: "",
   });
+  const [userData, setUserData] = useState({});
 
   const clientId =
     "329608136140-3jihk7s8b7t492c5tabklrfq1q03tjno.apps.googleusercontent.com";
@@ -27,10 +29,18 @@ export default function Login() {
       });
     };
 
+    const handleRoute = (event)=>{
+      setUserData(event[0])
+      if(event[0].role === "admin"){
+        history('/modifyItems', {state: {user: event[0] }});
+      }else if(event[0].role === "user"){
+        history('/', {state: {user: event[0] }});
+      }
+    }
+
     const handleSubmit = (event) => {
       event.preventDefault();
-      console.log("Form Data: ", formData);
-      let apiPath = "http://localhost:5000/adduser";
+      let apiPath = "http://localhost:5000/validateuser";
       let myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
       let fetchData = {
@@ -38,12 +48,11 @@ export default function Login() {
         body: JSON.stringify({
           email: formData.email,
           password: formData.password,
-          phonenumber: formData.phonenumber,
-          name: formData.name,
         }),
         headers: myHeaders,
       };
-      return fetch(apiPath, fetchData);
+      fetch(apiPath, fetchData).then(data => data.json())
+      .then(success => handleRoute(success));
       // send form data to API or store it in the state
     };
 
@@ -85,7 +94,7 @@ export default function Login() {
           isSignedIn={true}
         />
       </div>
-      
+
     </div>
   );
 }

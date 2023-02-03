@@ -17,7 +17,6 @@ const Registration = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("Form Data: ", formData);
     let apiPath = "http://localhost:5000/adduser";
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
