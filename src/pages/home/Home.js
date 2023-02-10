@@ -25,9 +25,13 @@ export default function Home() {
     }
   };
 
-  useEffect(async () => {
-    const apiPath = "http://localhost:5000/getmenu";
-    const response = await fetch(apiPath).then((data) => data.json());
+  useEffect(() => {
+    const fetchData = async() => {
+      const apiPath = "http://localhost:5000/getmenu";
+      const response = await fetch(apiPath).then((data) => data.json());
+      return response;
+    }
+    const response = fetchData();
     const appetizers = response?.filter(
       (item) => item.category === "appetizer"
     );
