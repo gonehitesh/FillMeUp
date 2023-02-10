@@ -1,13 +1,20 @@
-import React from 'react'
-import {useLocation} from 'react-router-dom';
+import React from "react";
+import { useLocation } from "react-router-dom";
 
 export default function ModifyItems() {
-    const location = useLocation();
+  const location = useLocation();
 
   return (
-    <div>ModifyItems
-
-<p>Hello <b style={{textTransform: "capitalize"}}> {location.state.user.name}</b></p>
+    <div>
+      ModifyItems
+      {location.state?.user?.name && (
+        <p>
+          Hello{" "}
+          <b style={{ textTransform: "capitalize" }}>
+            {location.state.user.name}
+          </b>
+        </p>
+      )}
     </div>
-  )
+  );
 }

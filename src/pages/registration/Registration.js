@@ -1,3 +1,4 @@
+import { Button } from "antd";
 import React, { useState } from "react";
 import "./registration.scss";
 const Registration = () => {
@@ -35,7 +36,7 @@ const Registration = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="registration-form">
+    <form className="registration-form">
       <h2 className="form-title">Sign Up</h2>
       <div className="form-group">
         <label htmlFor="username">Username:</label>
@@ -77,9 +78,9 @@ const Registration = () => {
           className="form-control"
         />
       </div>
-      <button type="submit" className="btn btn-primary">
+      <Button type="primary" size="large" block onClick={handleSubmit}>
         Submit
-      </button>
+      </Button>
     </form>
   );
 };
