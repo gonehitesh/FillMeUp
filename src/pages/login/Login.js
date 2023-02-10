@@ -11,13 +11,14 @@ export default function Login() {
     email: "",
     password: "",
   });
-  const [userData, setUserData] = useState({});
+  // const [userData, setUserData] = useState({});
 
   const clientId =
     "329608136140-3jihk7s8b7t492c5tabklrfq1q03tjno.apps.googleusercontent.com";
 
   const handleResponse = (response) => {
     const details = jwtDecode(response?.credential);
+    console.log("details",details);
   };
 
   const handleChange = (event) => {
@@ -28,7 +29,7 @@ export default function Login() {
   };
 
   const handleRoute = (event) => {
-    setUserData(event[0]);
+    // setUserData(event[0]);
     if (event[0].role === "admin") {
       history("/modifyItems", { state: { user: event[0] } });
     } else if (event[0].role === "user") {
