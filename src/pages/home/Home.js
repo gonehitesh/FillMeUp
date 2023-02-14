@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { Card, Col, Row, Tabs } from "antd";
+import { fetchCall } from "../../hooks/useFetch";
 
 export default function Home() {
   const location = useLocation();
@@ -25,32 +26,21 @@ export default function Home() {
     }
   };
 
-  useEffect(() => {
-    const fetchData = async() => {
-      const apiPath = "http://localhost:5000/getmenu";
-      const response = await fetch(apiPath).then((data) => data.json());
-      return response;
+  useEffect(async () => {
+    try {
+      const response = await fetchCall("getmenu");
+      const appetizers = await response?.filter(
+        (item) => item.category === "appetizer"
+      );
+      setMenu(response);
+      setItems(appetizers);
+    } catch (error) {
+      console.log(error);
     }
-    const response = fetchData();
-    const appetizers = response?.filter(
-      (item) => item.category === "appetizer"
-    );
-    setMenu(response);
-    setItems(appetizers);
   }, []);
 
   return (
     <>
-      <div>
-        {location.state?.user?.name && (
-          <p>
-            Hello{" "}
-            <b style={{ textTransform: "capitalize" }}>
-              {location.state.user.name}
-            </b>
-          </p>
-        )}
-      </div>
       <Tabs
         centered
         defaultActiveKey="appetizers"
@@ -64,6 +54,7 @@ export default function Home() {
         {items.map((item, index) => (
           <Col
             className="gutter-row"
+            key={index}
             xs={24}
             sm={12}
             md={8}
@@ -73,7 +64,6 @@ export default function Home() {
             style={{ padding: "20px" }}
           >
             <Card
-              key={index}
               cover={
                 <img
                   alt={item?.itemName}
