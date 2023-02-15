@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { Card, Col, Row, Tabs } from "antd";
 import { fetchCall } from "../../hooks/useFetch";
 
 export default function Home() {
-  const location = useLocation();
   const [menu, setMenu] = useState([]);
   const [items, setItems] = useState([]);
 

@@ -1,10 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Layout, Menu, Image } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import fetchCall from "../../hooks/useFetch";
 
 export default function NavBar() {
   const { Header } = Layout;
+  const [storeInfo, setStoreInfo] = useState();
+
+  useEffect(async () => {
+    try {
+      const storeInfo = await fetchCall("storeinfo");
+      setStoreInfo(storeInfo[0]);
+      localStorage.setItem("storeInfo", JSON.stringify(storeInfo[0]));
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
 
   return (
     <Header>
@@ -16,7 +28,7 @@ export default function NavBar() {
       >
         <Image
           width={75}
-          src="images/restaurant-logo.jpg"
+          src={storeInfo?.iconPath}
           preview={false}
           height={55}
         />
