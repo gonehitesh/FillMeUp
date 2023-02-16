@@ -63,6 +63,7 @@ export default function Home() {
             style={{ padding: "20px" }}
           >
             <Card
+              style={{ height: "100%" }}
               cover={
                 <img
                   alt={item?.itemName}

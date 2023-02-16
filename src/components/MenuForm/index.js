@@ -25,7 +25,11 @@ const MenuForm = ({ closeModal, initialValues, addItem }) => {
     if (addItem) {
       fetchCall("addmenu", "POST", values);
     } else {
-      fetchCall("edititem", "PUT", values);
+      fetchCall(
+        "edititem",
+        "PUT",
+        Object.assign(values, { id: initialValues._id })
+      );
     }
 
     closeModal();

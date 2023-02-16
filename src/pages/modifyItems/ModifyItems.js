@@ -66,6 +66,7 @@ export default function ModifyItems() {
                 <img
                   alt="example"
                   style={{
+                    marginTop: "20px",
                     borderRadius: "50%",
                     width: "150px",
                     height: "150px",
