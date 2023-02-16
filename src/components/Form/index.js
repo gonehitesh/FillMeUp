@@ -106,7 +106,7 @@ const InfoForm = ({ closeModal, initialValues }) => {
 
       <Button onClick={closeModal}>Cancel</Button>
       <Button type="primary" htmlType="submit">
-        Register
+        Submit
       </Button>
     </Form>
   );

@@ -30,6 +30,7 @@ export default function Home() {
       const appetizers = await response?.filter(
         (item) => item.category === "appetizer"
       );
+      localStorage.setItem("menuItems", JSON.stringify(response));
       setMenu(response);
       setItems(appetizers);
     } catch (error) {
