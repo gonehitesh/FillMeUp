@@ -13,3 +13,25 @@
     margin-left: 15px;
   }
 }
+
+.editItems{
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.menuButtons{
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.selectStyles{
+  width: 250px;
+}
+
+@media (max-width: 600px) {
+  .selectStyles{
+    width: 150px;
+  }
+}

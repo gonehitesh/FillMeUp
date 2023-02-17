@@ -64,6 +64,7 @@ const ModifyMenu = () => {
   }, []);
 
   return (
+<div class="editItems">
     <Card
       style={{
         marginTop: 16,
@@ -73,20 +74,23 @@ const ModifyMenu = () => {
     >
       <Descriptions column={1}>
         <Form>
-          <Select
-            placeholder="Select a category to Modify"
-            onSelect={handleClick}
-          >
-            {categories &&
-              categories.map((category) => (
-                <Select.Option s value={category.key}>
-                  {category.label}
-                </Select.Option>
-              ))}
-          </Select>
-          <Button type="primary" onClick={addIem}>
-            Add New Item
-          </Button>
+        <div className="menuButtons">
+            <Select
+              className="selectStyles"
+              placeholder="Select a category to Modify"
+              onSelect={handleClick}
+            >
+              {categories &&
+                categories.map((category) => (
+                  <Select.Option s value={category.key}>
+                    {category.label}
+                  </Select.Option>
+                ))}
+            </Select>
+            <Button type="primary" onClick={addIem}>
+              Add New Item
+            </Button>
+          </div>
         </Form>
       </Descriptions>
       {initialValues && (
@@ -119,6 +123,7 @@ const ModifyMenu = () => {
                 style={{ padding: "20px" }}
               >
                 <Card
+                  style={{height: "100%"}}
                   cover={
                     <img
                       alt={item?.itemName}
@@ -128,30 +133,31 @@ const ModifyMenu = () => {
                   }
                   extra={<button onClick={() => openModal(item)}>Edit</button>}
                 >
-                  <Row>
-                    <Col span={18}>
-                      <h2>{item?.itemName}</h2>
-                    </Col>
-                    <Col span={6}>
-                      <h2>${item?.price}</h2>
-                    </Col>
-                  </Row>
-                  <Card.Meta
-                    description={
-                      <>
-                        <p>{item?.description}</p>
-                        <p>Allergies: {item?.allergies}</p>
-                        <p>Calories: {item?.calories}</p>
-                      </>
-                    }
-                  />
-                </Card>
-              </Col>
-            ))}
-          </Row>
-        </>
-      )}
-    </Card>
+                    <Row>
+                      <Col span={18}>
+                        <h2>{item?.itemName}</h2>
+                      </Col>
+                      <Col span={6}>
+                        <h2>${item?.price}</h2>
+                      </Col>
+                    </Row>
+                    <Card.Meta
+                      description={
+                        <>
+                          <p>{item?.description}</p>
+                          <p>Allergies: {item?.allergies}</p>
+                          <p>Calories: {item?.calories}</p>
+                        </>
+                      }
+                    />
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+          </>
+        )}
+      </Card>
+    </div>
   );
 };
 
