@@ -1,18 +1,32 @@
-import React, { useState } from "react";
-import { Button, Card, Col, Descriptions, Form, Modal, Row, Tabs } from "antd";
+import React, { useEffect, useState } from "react";
+import {
+  Button,
+  Card,
+  Col,
+  Descriptions,
+  Form,
+  Modal,
+  Row,
+  Select,
+} from "antd";
 import MenuForm from "../../../../components/MenuForm";
+import fetchCall from "../../../../hooks/useFetch";
 
 const ModifyMenu = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [updateItem, setUpdateItem] = useState(false);
   const [initialValues, setInitialValues] = useState();
-
+  const [menuItems, setMenuItems] = useState();
   const [items, setItems] = useState([]);
 
-  const menuItems = JSON.parse(localStorage.getItem("menuItems"));
   const categoriesList = [...new Set(menuItems?.map((item) => item.category))];
   const categories = categoriesList.map((item) => {
-    return { key: item, label: item };
+    const label = item
+      .toLowerCase()
+      .split(" ")
+      .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
+      .join(" ");
+    return { key: item, label };
   });
 
   const addIem = () => {
@@ -27,11 +41,8 @@ const ModifyMenu = () => {
   };
 
   const handleCancel = () => {
+    setInitialValues();
     setIsModalOpen(false);
-  };
-
-  const modifyItem = () => {
-    setUpdateItem(true);
   };
 
   const handleClick = (key) => {
@@ -39,7 +50,18 @@ const ModifyMenu = () => {
       const items = menuItems.filter((item) => item.category === key);
       setItems(items);
     }
+    setUpdateItem(true);
   };
+
+  const getMenu = async () => {
+    const respose = await fetchCall("getmenu");
+    setMenuItems(respose);
+    return respose;
+  };
+
+  useEffect(() => {
+    getMenu();
+  }, []);
 
   return (
     <Card
@@ -51,33 +73,38 @@ const ModifyMenu = () => {
     >
       <Descriptions column={1}>
         <Form>
-          <Button onClick={modifyItem}>Modify Current Menu</Button>
+          <Select
+            placeholder="Select a category to Modify"
+            onSelect={handleClick}
+          >
+            {categories &&
+              categories.map((category) => (
+                <Select.Option s value={category.key}>
+                  {category.label}
+                </Select.Option>
+              ))}
+          </Select>
           <Button type="primary" onClick={addIem}>
             Add New Item
           </Button>
         </Form>
       </Descriptions>
-      <Modal
-        title="Item Description"
-        open={isModalOpen}
-        onCancel={handleCancel}
-        footer={null}
-      >
-        <MenuForm
-          closeModal={handleCancel}
-          initialValues={initialValues}
-          addItem={!updateItem}
-        />
-      </Modal>
+      {initialValues && (
+        <Modal
+          title="Item Description"
+          open={isModalOpen}
+          onCancel={handleCancel}
+          footer={null}
+        >
+          <MenuForm
+            closeModal={handleCancel}
+            initialValues={initialValues}
+            addItem={!updateItem}
+          />
+        </Modal>
+      )}
       {updateItem && (
         <>
-          <Tabs
-            type="card"
-            defaultActiveKey={categories[0]?.key}
-            items={categories}
-            onTabClick={handleClick}
-            style={{ margin: "2% 0" }}
-          />
           <Row style={{ padding: "10px" }}>
             {items.map((item, index) => (
               <Col

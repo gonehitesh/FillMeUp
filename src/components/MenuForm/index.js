@@ -1,4 +1,4 @@
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, InputNumber, Select } from "antd";
 import fetchCall from "../../hooks/useFetch";
 
 const formItemLayout = {
@@ -42,7 +42,7 @@ const MenuForm = ({ closeModal, initialValues, addItem }) => {
       form={form}
       name="register"
       onFinish={onFinish}
-      initialValues={initialValues}
+      initialValues={addItem ? null : initialValues}
       style={{
         maxWidth: 600,
       }}
@@ -61,7 +61,15 @@ const MenuForm = ({ closeModal, initialValues, addItem }) => {
         <Input />
       </Form.Item>
       <Form.Item name="category" label="Category">
-        <Input />
+        <Select>
+          <Select.Option value="appetizer">Appetizers</Select.Option>
+          <Select.Option value="main course">Main Course</Select.Option>
+          <Select.Option value="soups">Soups</Select.Option>
+          <Select.Option value="breads">Breads</Select.Option>
+          <Select.Option value="sides">Sides</Select.Option>
+          <Select.Option value="desserts">Desserts</Select.Option>
+          <Select.Option value="beverages">Beverages</Select.Option>
+        </Select>
       </Form.Item>
 
       <Form.Item name="description" label="Description">
@@ -69,12 +77,14 @@ const MenuForm = ({ closeModal, initialValues, addItem }) => {
       </Form.Item>
 
       <Form.Item name="price" label="Price">
-        <Input
+        <InputNumber
           addonBefore="USD"
           style={{
             width: "100%",
           }}
           maxLength={6}
+          min={0}
+          controls={false}
         />
       </Form.Item>
 
@@ -83,7 +93,13 @@ const MenuForm = ({ closeModal, initialValues, addItem }) => {
       </Form.Item>
 
       <Form.Item name="calories" label="Calories">
-        <Input />
+        <InputNumber
+          style={{
+            width: "100%",
+          }}
+          maxLength={6}
+          min={0}
+        />
       </Form.Item>
 
       <Form.Item name="image" label="Image Path">

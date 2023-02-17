@@ -10,11 +10,11 @@ export default function Home() {
   const food = [
     { key: "appetizer", label: "Appetizers" },
     { key: "main course", label: "Main Course" },
-    { key: "Soups", label: "Soups" },
-    { key: "Breads", label: "Breads" },
+    { key: "soups", label: "Soups" },
+    { key: "breads", label: "Breads" },
     { key: "sides", label: "Sides" },
     { key: "desserts", label: "Desserts" },
-    { key: "Beverages", label: "Beverages" },
+    { key: "beverages", label: "Beverages" },
   ];
 
   const handleClick = (key) => {
@@ -30,7 +30,6 @@ export default function Home() {
       const appetizers = await response?.filter(
         (item) => item.category === "appetizer"
       );
-      localStorage.setItem("menuItems", JSON.stringify(response));
       setMenu(response);
       setItems(appetizers);
     } catch (error) {
