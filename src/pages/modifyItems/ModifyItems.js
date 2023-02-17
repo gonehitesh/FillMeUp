@@ -41,7 +41,7 @@ export default function ModifyItems() {
   };
 
   return (
-    <div>
+    <div className="modifyItems">
       <Row style={{ padding: "10px" }}>
         {items.map((item, index) => (
           <Col

@@ -103,11 +103,12 @@ const InfoForm = ({ closeModal, initialValues }) => {
       <Form.Item name="additionalInfo" label="Additional Info">
         <Input.TextArea showCount maxLength={150} />
       </Form.Item>
-
-      <Button onClick={closeModal}>Cancel</Button>
-      <Button type="primary" htmlType="submit">
-        Submit
-      </Button>
+      <div className="modelButtons">
+        <Button onClick={closeModal}>Cancel</Button>
+        <Button type="primary" htmlType="submit">
+          Submit
+        </Button>
+      </div>
     </Form>
   );
 };

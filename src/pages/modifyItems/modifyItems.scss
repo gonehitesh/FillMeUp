@@ -1,4 +1,15 @@
+.modifyItems{
+  padding-bottom: 50px;
+}
 .ant-card-cover {
   display: flex;
   justify-content: center;
+}
+
+.modelButtons{
+  display: flex;
+  justify-content: right;
+  button{
+    margin-left: 15px;
+  }
 }
