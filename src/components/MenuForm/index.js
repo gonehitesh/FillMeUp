@@ -105,11 +105,12 @@ const MenuForm = ({ closeModal, initialValues, addItem }) => {
       <Form.Item name="image" label="Image Path">
         <Input />
       </Form.Item>
-
-      <Button onClick={closeModal}>Cancel</Button>
-      <Button type="primary" htmlType="submit">
-        Submit
-      </Button>
+      <div className="modelButtons">
+        <Button onClick={closeModal}>Cancel</Button>
+        <Button type="primary" htmlType="submit">
+          Submit
+        </Button>
+      </div>
     </Form>
   );
 };

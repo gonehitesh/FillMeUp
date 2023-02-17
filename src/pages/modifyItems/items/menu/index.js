@@ -64,75 +64,75 @@ const ModifyMenu = () => {
   }, []);
 
   return (
-<div class="editItems">
-    <Card
-      style={{
-        marginTop: 16,
-      }}
-      type="inner"
-      title="Modify Menu"
-    >
-      <Descriptions column={1}>
-        <Form>
-        <div className="menuButtons">
-            <Select
-              className="selectStyles"
-              placeholder="Select a category to Modify"
-              onSelect={handleClick}
-            >
-              {categories &&
-                categories.map((category) => (
-                  <Select.Option s value={category.key}>
-                    {category.label}
-                  </Select.Option>
-                ))}
-            </Select>
-            <Button type="primary" onClick={addIem}>
-              Add New Item
-            </Button>
-          </div>
-        </Form>
-      </Descriptions>
-      {initialValues && (
-        <Modal
-          title="Item Description"
-          open={isModalOpen}
-          onCancel={handleCancel}
-          footer={null}
-        >
-          <MenuForm
-            closeModal={handleCancel}
-            initialValues={initialValues}
-            addItem={!updateItem}
-          />
-        </Modal>
-      )}
-      {updateItem && (
-        <>
-          <Row style={{ padding: "10px" }}>
-            {items.map((item, index) => (
-              <Col
-                className="gutter-row"
-                key={index}
-                xs={24}
-                sm={12}
-                md={8}
-                lg={6}
-                xl={6}
-                xxl={4}
-                style={{ padding: "20px" }}
+    <div className="editItems">
+      <Card
+        style={{
+          marginTop: 16,
+        }}
+        type="inner"
+        title="Modify Menu"
+      >
+        <Descriptions column={1}>
+          <Form>
+          <div className="menuButtons">
+              <Select
+                className="selectStyles"
+                placeholder="Select a category to Modify"
+                onSelect={handleClick}
               >
-                <Card
-                  style={{height: "100%"}}
-                  cover={
-                    <img
-                      alt={item?.itemName}
-                      src={item?.image}
-                      style={{ width: "100%", height: 170 }}
-                    />
-                  }
-                  extra={<button onClick={() => openModal(item)}>Edit</button>}
+                {categories &&
+                  categories.map((category) => (
+                    <Select.Option value={category.key}>
+                      {category.label}
+                    </Select.Option>
+                  ))}
+              </Select>
+              <Button type="primary" onClick={addIem}>
+                Add New Item
+              </Button>
+            </div>
+          </Form>
+        </Descriptions>
+        {(initialValues || !updateItem) && (
+          <Modal
+            title="Item Description"
+            open={isModalOpen}
+            onCancel={handleCancel}
+            footer={null}
+          >
+            <MenuForm
+              closeModal={handleCancel}
+              initialValues={initialValues}
+              addItem={!updateItem}
+            />
+          </Modal>
+        )}
+        {updateItem && (
+          <>
+            <Row style={{ padding: "10px" }}>
+              {items.map((item, index) => (
+                <Col
+                  className="gutter-row"
+                  key={index}
+                  xs={24}
+                  sm={12}
+                  md={8}
+                  lg={6}
+                  xl={6}
+                  xxl={4}
+                  style={{ padding: "20px" }}
                 >
+                  <Card
+                    style={{height: "100%"}}
+                    cover={
+                      <img
+                        alt={item?.itemName}
+                        src={item?.image}
+                        style={{ width: "100%", height: 170 }}
+                      />
+                    }
+                    extra={<button onClick={() => openModal(item)}>Edit</button>}
+                  >
                     <Row>
                       <Col span={18}>
                         <h2>{item?.itemName}</h2>
