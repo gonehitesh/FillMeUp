@@ -3,6 +3,7 @@ import { Card, Col, Row } from "antd";
 import "./modifyItems.scss";
 import ModifyMenu from "./items/menu";
 import ModifyInfo from "./items/storeInfo";
+import ModifyCoupons from "./items/coupons";
 
 export default function ModifyItems() {
   const [displayItem, setDisplayItem] = useState("");
@@ -83,6 +84,7 @@ export default function ModifyItems() {
       </Row>
       {displayItem === "menu" && <ModifyMenu />}
       {displayItem === "store_info" && <ModifyInfo />}
+      {displayItem === "coupons" && <ModifyCoupons />}
     </div>
   );
 }
