@@ -42,6 +42,15 @@ const ModifyInfo = () => {
           <Descriptions.Item label="Additional Info">
             {storeInfo?.additionalInfo}
           </Descriptions.Item>
+          <Descriptions.Item label="Instagram Url">
+            {storeInfo?.instagramUrl}
+          </Descriptions.Item>
+          <Descriptions.Item label="Twitter Url">
+            {storeInfo?.twitterUrl}
+          </Descriptions.Item>
+          <Descriptions.Item label="Facebook Url">
+            {storeInfo?.facebookUrl}
+          </Descriptions.Item>
         </Descriptions>
 
         <Modal

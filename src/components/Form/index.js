@@ -103,6 +103,19 @@ const InfoForm = ({ closeModal, initialValues }) => {
       <Form.Item name="additionalInfo" label="Additional Info">
         <Input.TextArea showCount maxLength={150} />
       </Form.Item>
+
+      <Form.Item name="instagramUrl" label="Instagram Url">
+        <Input />
+      </Form.Item>
+
+      <Form.Item name="twitterUrl" label="TwitterUrl Path">
+        <Input />
+      </Form.Item>
+
+      <Form.Item name="facebookUrl" label="Facebook Url">
+        <Input />
+      </Form.Item>
+
       <div className="modelButtons">
         <Button onClick={closeModal}>Cancel</Button>
         <Button type="primary" htmlType="submit">

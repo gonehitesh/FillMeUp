@@ -7,6 +7,7 @@ import ModifyItems from "./pages/modifyItems/ModifyItems";
 import NavBar from "./pages/navBar";
 import EventsAndCoupons from "./pages/eventsAndCoupons";
 import ContactUs from "./pages/contactUs";
+import Footer from "./pages/footer/Footer";
 
 export default function Router() {
   return (
@@ -20,6 +21,7 @@ export default function Router() {
         <Route exact path="/events&coupons" element={<EventsAndCoupons />} />
         <Route exact path="/contactUs" element={<ContactUs />} />
       </Routes>
+      <Footer />
     </BrowserRouter>
   );
 }
