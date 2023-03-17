@@ -25,12 +25,13 @@ const ModifyCoupons = () => {
   };
 
   const openModal = (item) => {
-    setInitialValues(item);
+    setInitialValues({ ...item });
     setIsModalOpen(true);
   };
 
   const handleCancel = () => {
     setInitialValues();
+    setUpdateItem(true);
     setIsModalOpen(false);
   };
 
@@ -39,7 +40,7 @@ const ModifyCoupons = () => {
     setCoupons(respose);
     return respose;
   };
-  
+
   useEffect(() => {
     getCoupons();
   }, []);
@@ -128,7 +129,7 @@ const ModifyCoupons = () => {
                                 }
                               />
                             </p>
-                            <p>Expire Date: { (item?.expireDate)}</p>
+                            <p>Expire Date: {item?.expireDate}</p>
                           </>
                         }
                       />

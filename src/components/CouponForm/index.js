@@ -1,6 +1,7 @@
+import { useState } from "react";
 import { Button, Form, Input, InputNumber, Select, DatePicker } from "antd";
 import fetchCall from "../../hooks/useFetch";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 
 const formItemLayout = {
   labelCol: {
@@ -22,15 +23,24 @@ const formItemLayout = {
 };
 const CouponForm = ({ closeModal, initialValues, addItem }) => {
   const [form] = Form.useForm();
+  const [formatedDate, setDate] = useState();
+
   const onFinish = (values) => {
     if (addItem) {
-      fetchCall("addCoupons", "POST", values);
+      fetchCall(
+        "addCoupons",
+        "POST",
+        Object.assign(values, { expireDate: formatedDate })
+      );
     } else {
-        console.log(initialValues, values)
+      console.log(initialValues, values);
       fetchCall(
         "editCoupons",
         "PUT",
-        Object.assign(values, { id: initialValues._id })
+        Object.assign(values, {
+          id: initialValues._id,
+          expireDate: formatedDate,
+        })
       );
     }
 
@@ -39,10 +49,8 @@ const CouponForm = ({ closeModal, initialValues, addItem }) => {
   };
 
   const onChange = (date, dateString) => {
-    console.log(date, dateString, typeof date);
+    setDate(dateString);
   };
-
-  console.log("additem",addItem, initialValues)
 
   return (
     <Form
@@ -50,7 +58,13 @@ const CouponForm = ({ closeModal, initialValues, addItem }) => {
       form={form}
       name="model"
       onFinish={onFinish}
-      initialValues={addItem ? null : Object.assign(initialValues, {expireDate: dayjs(initialValues.expireDate, "MM/DD/YY")})}
+      initialValues={
+        addItem
+          ? null
+          : Object.assign(initialValues, {
+              expireDate: dayjs(initialValues.expireDate, "MM/DD/YYYY"),
+            })
+      }
       style={{
         maxWidth: 600,
       }}

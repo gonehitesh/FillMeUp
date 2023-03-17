@@ -5,7 +5,7 @@ import Registration from "./pages/registration/Registration";
 import Home from "./pages/home/Home";
 import ModifyItems from "./pages/modifyItems/ModifyItems";
 import NavBar from "./pages/navBar";
-import EventsAndCoupons from "./pages/eventsAndCoupons";
+import Coupons from "./pages/coupons";
 import ContactUs from "./pages/contactUs";
 import Footer from "./pages/footer/Footer";
 
@@ -18,7 +18,7 @@ export default function Router() {
         <Route exact path="/login" element={<Login />} />
         <Route exact path="/signup" element={<Registration />} />
         <Route exact path="/modifyItems" element={<ModifyItems />} />
-        <Route exact path="/events&coupons" element={<EventsAndCoupons />} />
+        <Route exact path="/coupons" element={<Coupons />} />
         <Route exact path="/contactUs" element={<ContactUs />} />
       </Routes>
       <Footer />

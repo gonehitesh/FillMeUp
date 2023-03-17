@@ -35,8 +35,8 @@ export default function NavBar() {
         <Menu.Item key="home">
           <Link to={"/"}>Home</Link>
         </Menu.Item>
-        <Menu.Item key="events&coupons">
-          <Link to={"/events&coupons"}>Events & Coupons</Link>
+        <Menu.Item key="coupons">
+          <Link to={"/coupons"}>Coupons</Link>
         </Menu.Item>
         <Menu.Item key="contactUs">
           <Link to={"/contactUs"}>Contact Us</Link>
