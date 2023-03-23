@@ -9,8 +9,11 @@ export default function Cart() {
 
   useEffect(() => {
     setCartItems(JSON.parse(localStorage.getItem("cartItems")));
-    reviewOrder();
   }, []);
+
+  useEffect(() => {
+    reviewOrder()
+  }, [cartItems]);
 
   const reviewOrder = () => {
     let calories = 0;
