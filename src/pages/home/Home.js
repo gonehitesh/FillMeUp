@@ -37,6 +37,15 @@ export default function Home() {
     }
   }, []);
 
+  const addToCart = (item) => {
+    let cartData = JSON.parse(localStorage.getItem("cartItems"));
+    if (!cartData) {
+      cartData = [];
+    }
+    cartData.push(item);
+    localStorage.setItem("cartItems", JSON.stringify(cartData));
+  };
+
   return (
     <>
       <Tabs
@@ -70,7 +79,12 @@ export default function Home() {
                   style={{ width: "100%", height: 170 }}
                 />
               }
-              actions={[<PlusCircleOutlined key="add" />]}
+              actions={[
+                <PlusCircleOutlined
+                  key="add"
+                  onClick={() => addToCart(item)}
+                />,
+              ]}
             >
               <Row>
                 <Col span={18}>
