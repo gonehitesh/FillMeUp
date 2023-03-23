@@ -11,8 +11,7 @@ import { Link } from "react-router-dom";
 import "./footer.scss";
 
 export default function FooterComp() {
-  const { instagramUrl, twitterUrl, facebookUrl, address, contactNumber } =
-    JSON.parse(localStorage.getItem("storeInfo"));
+  const data = JSON.parse(localStorage.getItem("storeInfo"));
   return (
     <Footer className="footer">
       <Row>
@@ -30,32 +29,32 @@ export default function FooterComp() {
         </Col>
         <Col span={8}>
           <h2> Follow Us On </h2>
-          {instagramUrl !== "" && (
-            <a href={instagramUrl}>
+          {data && data.instagramUrl !== "" && (
+            <a href={data.instagramUrl}>
               <InstagramOutlined className="footerLinks" />
             </a>
           )}
-          {twitterUrl !== "" && (
-            <a href={twitterUrl}>
+          {data && data.twitterUrl !== "" && (
+            <a href={data.twitterUrl}>
               <TwitterOutlined className="footerLinks" />
             </a>
           )}
-          {facebookUrl !== "" && (
-            <a href={facebookUrl}>
+          {data && data.facebookUrl !== "" && (
+            <a href={data.facebookUrl}>
               <FacebookOutlined className="footerLinks" />
             </a>
           )}
         </Col>
         <Col span={8}>
-          <h2> Address </h2> <p> {address && address} </p>
-          { contactNumber &&
-          <p>
-            <PhoneOutlined /> +1 {contactNumber}
-          </p>
-          }
+          <h2> Address </h2> <p> {data && data.address && data.address} </p>
+          {data && data.contactNumber && (
+            <p>
+              <PhoneOutlined /> +1 {data.contactNumber}
+            </p>
+          )}
         </Col>
       </Row>
-      <p style={{marginTop:"20px"}}>©2023 FillMeUp</p>
+      <p style={{ marginTop: "20px" }}>©2023 FillMeUp</p>
     </Footer>
   );
 }
