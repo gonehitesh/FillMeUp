@@ -18,7 +18,6 @@ export default function Login() {
 
   const handleResponse = (response) => {
     const details = jwtDecode(response?.credential);
-    console.log("details",details);
   };
 
   const handleChange = (event) => {

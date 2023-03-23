@@ -33,7 +33,6 @@ const CouponForm = ({ closeModal, initialValues, addItem }) => {
         Object.assign(values, { expireDate: formatedDate })
       );
     } else {
-      console.log(initialValues, values);
       fetchCall(
         "editCoupons",
         "PUT",

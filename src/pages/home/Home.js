@@ -44,19 +44,15 @@ export default function Home() {
     if (!cartData) {
       cartData = [];
     }
-    console.log("Before", { cartData, item });
     let itemIndex = cartData.findIndex((i) => i._id === item._id);
 
     if (itemIndex !== -1) {
-      // Item exists, update quantity value
-      console.log("Item exists", { item, itemIndex });
       cartData[itemIndex].quantity += quantity;
     } else {
-      console.log("Item not exists", { item });
-      // Item does not exist, add to array
       cartData.push({ ...item, quantity: quantity });
     }
     localStorage.setItem("cartItems", JSON.stringify(cartData));
+    window.dispatchEvent(new Event("storage"));
   };
 
   return (

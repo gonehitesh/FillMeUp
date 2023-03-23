@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Col, Row, Tooltip } from "antd";
+import { Col, Row, Tooltip, Button } from "antd";
 
 import "./cart.scss";
 import {
@@ -27,7 +27,6 @@ export default function Cart() {
     let subTotal = 0;
 
     if (cartItems) {
-      //multiply quantity
       cartItems.forEach((val) => {
         calories += val.calories * val.quantity;
         subTotal += val.price * val.quantity;
@@ -39,16 +38,19 @@ export default function Cart() {
 
   const removeItem = (item) => {
     const filterItems = cartItems.filter((i) => i._id !== item._id);
-    console.log("Remove - - ", { item, result: filterItems });
     localStorage.setItem("cartItems", JSON.stringify(filterItems));
     setCartItems(filterItems);
   };
+
+  window.addEventListener("storage", () => {
+    setCartItems(JSON.parse(localStorage.getItem("cartItems")));
+  });
 
   const onMinus = (item, quantity, index) => {
     const vsl = { ...item, quantity: quantity - 1 };
     cartItems[index] = vsl;
 
-    setCartItems(cartItems);
+    setCartItems([...cartItems]);
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
   };
 
@@ -56,7 +58,7 @@ export default function Cart() {
     const vsl = { ...item, quantity: quantity + 1 };
     cartItems[index] = vsl;
 
-    setCartItems(cartItems);
+    setCartItems([...cartItems]);
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
   };
 
@@ -70,6 +72,7 @@ export default function Cart() {
               style={{
                 margin: "15px",
                 boxShadow: "0 8px 16px 0 rgba(0,0,0,0.2)",
+                padding: "15px",
               }}
               key={`cart-${index}`}
             >
@@ -82,49 +85,68 @@ export default function Cart() {
                   />
                 </div>
               </Col>
-              <Col span={9}>
+              <Col span={15}>
                 <div style={{ marginLeft: "10px", marginTop: "10px" }}>
-                  <h2>{item.itemName}</h2>
-                  <p>Calories:{item.calories}</p>
-                  <p>
-                    Quantity:
-                    <>
-                      <MinusCircleOutlined
-                        onClick={() => onMinus(item, item.quantity, index)}
-                      />
-                      <span style={{ padding: "0px 4px" }}>
-                        {item.quantity}
-                      </span>
-                      <PlusCircleOutlined
-                        onClick={() => onPlus(item, item.quantity, index)}
-                      />
-                    </>
-                  </p>
-                  <p>Price:{item.price}</p>
-                </div>
-              </Col>
-              <Col span={6}>
-                <div style={{ marginLeft: "10px", marginTop: "10px" }}>
-                  <Tooltip
-                    title={
+                  <Row>
+                    <Col span={15}>
+                      <h2>{item.itemName}</h2>
+                    </Col>
+                    <Col span={9} className="rightAlign">
+                      <Tooltip
+                        title={
+                          <>
+                            <p>{item?.calories} Calories</p>
+                            <p>
+                              {item?.alergies
+                                ? "Allergies: " + item?.alergies
+                                : "No Allergies"}
+                            </p>
+                          </>
+                        }
+                      >
+                        <InfoCircleOutlined />
+                      </Tooltip>
+                    </Col>
+                  </Row>
+
+                  <Row>
+                    <Col span={6}>
+                      <p> Quantity: </p>
+                    </Col>
+                    <Col span={18} className="rightAlign">
                       <>
-                        <p>Calories:{item.calories}</p>
-                        <p>Alergies:{item.alergies}</p>
+                        <MinusCircleOutlined
+                          onClick={() => onMinus(item, item.quantity, index)}
+                        />
+                        <span style={{ padding: "0px 4px" }}>
+                          {item.quantity}
+                        </span>
+                        <PlusCircleOutlined
+                          onClick={() => onPlus(item, item.quantity, index)}
+                        />
                       </>
-                    }
-                  >
-                    <InfoCircleOutlined />
-                  </Tooltip>
-                  <DeleteOutlined
-                    onClick={() => removeItem(item)}
-                    style={{ fontSize: "20px" }}
-                  />
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col span={6}>
+                      <p> Price: </p>
+                    </Col>
+                    <Col span={18} className="rightAlign">
+                      <p>{item.price}</p>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col span={24} className="rightAlign">
+                      <Button danger onClick={() => removeItem(item)}>
+                        Delete
+                      </Button>
+                    </Col>
+                  </Row>
                 </div>
               </Col>
             </Row>
           ))}
-
-        <div class="reviewOrder">
+        <div className="reviewOrder">
           <Row>
             <Col span={15}>
               <p>Total Calories</p>

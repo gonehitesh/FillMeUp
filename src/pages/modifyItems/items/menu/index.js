@@ -37,7 +37,6 @@ const ModifyMenu = () => {
   const openModal = (item) => {
     setInitialValues(item);
     setIsModalOpen(true);
-    console.log("item val - ", item);
   };
 
   const handleCancel = () => {
