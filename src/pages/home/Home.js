@@ -39,10 +39,23 @@ export default function Home() {
 
   const addToCart = (item) => {
     let cartData = JSON.parse(localStorage.getItem("cartItems"));
+    const quantity = 1;
+
     if (!cartData) {
       cartData = [];
     }
-    cartData.push(item);
+    console.log("Before", { cartData, item });
+    let itemIndex = cartData.findIndex((i) => i._id === item._id);
+
+    if (itemIndex !== -1) {
+      // Item exists, update quantity value
+      console.log("Item exists", { item, itemIndex });
+      cartData[itemIndex].quantity += quantity;
+    } else {
+      console.log("Item not exists", { item });
+      // Item does not exist, add to array
+      cartData.push({ ...item, quantity: quantity });
+    }
     localStorage.setItem("cartItems", JSON.stringify(cartData));
   };
 

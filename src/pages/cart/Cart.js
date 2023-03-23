@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Col, Row } from "antd";
+import { Col, Row, Tooltip } from "antd";
+
 import "./cart.scss";
+import {
+  DeleteOutlined,
+  InfoCircleOutlined,
+  MinusCircleOutlined,
+  PlusCircleOutlined,
+} from "@ant-design/icons";
 
 export default function Cart() {
   const [cartItems, setCartItems] = useState([]);
@@ -12,7 +19,7 @@ export default function Cart() {
   }, []);
 
   useEffect(() => {
-    reviewOrder()
+    reviewOrder();
   }, [cartItems]);
 
   const reviewOrder = () => {
@@ -22,12 +29,35 @@ export default function Cart() {
     if (cartItems) {
       //multiply quantity
       cartItems.forEach((val) => {
-        calories += val.calories;
-        subTotal += val.price;
+        calories += val.calories * val.quantity;
+        subTotal += val.price * val.quantity;
       });
     }
     setCalories(calories);
     setSubTotal(subTotal.toFixed(2));
+  };
+
+  const removeItem = (item) => {
+    const filterItems = cartItems.filter((i) => i._id !== item._id);
+    console.log("Remove - - ", { item, result: filterItems });
+    localStorage.setItem("cartItems", JSON.stringify(filterItems));
+    setCartItems(filterItems);
+  };
+
+  const onMinus = (item, quantity, index) => {
+    const vsl = { ...item, quantity: quantity - 1 };
+    cartItems[index] = vsl;
+
+    setCartItems(cartItems);
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+  };
+
+  const onPlus = (item, quantity, index) => {
+    const vsl = { ...item, quantity: quantity + 1 };
+    cartItems[index] = vsl;
+
+    setCartItems(cartItems);
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
   };
 
   return (
@@ -35,12 +65,13 @@ export default function Cart() {
       <div>
         <h2>Your Cart</h2>
         {cartItems &&
-          cartItems.map((item) => (
+          cartItems.map((item, index) => (
             <Row
               style={{
                 margin: "15px",
                 boxShadow: "0 8px 16px 0 rgba(0,0,0,0.2)",
               }}
+              key={`cart-${index}`}
             >
               <Col span={9}>
                 <div>
@@ -51,12 +82,43 @@ export default function Cart() {
                   />
                 </div>
               </Col>
-              <Col span={15}>
+              <Col span={9}>
                 <div style={{ marginLeft: "10px", marginTop: "10px" }}>
                   <h2>{item.itemName}</h2>
                   <p>Calories:{item.calories}</p>
-                  <p>Quantity:</p>
+                  <p>
+                    Quantity:
+                    <>
+                      <MinusCircleOutlined
+                        onClick={() => onMinus(item, item.quantity, index)}
+                      />
+                      <span style={{ padding: "0px 4px" }}>
+                        {item.quantity}
+                      </span>
+                      <PlusCircleOutlined
+                        onClick={() => onPlus(item, item.quantity, index)}
+                      />
+                    </>
+                  </p>
                   <p>Price:{item.price}</p>
+                </div>
+              </Col>
+              <Col span={6}>
+                <div style={{ marginLeft: "10px", marginTop: "10px" }}>
+                  <Tooltip
+                    title={
+                      <>
+                        <p>Calories:{item.calories}</p>
+                        <p>Alergies:{item.alergies}</p>
+                      </>
+                    }
+                  >
+                    <InfoCircleOutlined />
+                  </Tooltip>
+                  <DeleteOutlined
+                    onClick={() => removeItem(item)}
+                    style={{ fontSize: "20px" }}
+                  />
                 </div>
               </Col>
             </Row>
@@ -65,34 +127,34 @@ export default function Cart() {
         <div class="reviewOrder">
           <Row>
             <Col span={15}>
-            <p>Total Calories</p>
+              <p>Total Calories</p>
             </Col>
             <Col span={9} className="rightAlign">
-            <p>{calories}</p>
+              <p>{calories}</p>
             </Col>
           </Row>
           <Row>
             <Col span={15}>
-            <p>Subtotal</p>
+              <p>Subtotal</p>
             </Col>
             <Col span={9} className="rightAlign">
-            <p>${subTotal}</p>
+              <p>${subTotal}</p>
             </Col>
           </Row>
           <Row>
             <Col span={15}>
-            <p>Estimated Tax</p>
+              <p>Estimated Tax</p>
             </Col>
             <Col span={9} className="rightAlign">
-            <p>TBD</p>
+              <p>TBD</p>
             </Col>
           </Row>
           <Row>
             <Col span={15}>
-            <h3>Total</h3>
+              <h3>Total</h3>
             </Col>
             <Col span={9} className="rightAlign">
-            <h3>${subTotal}</h3>
+              <h3>${subTotal}</h3>
             </Col>
           </Row>
         </div>

@@ -45,9 +45,12 @@ export default function NavBar() {
             <Menu.Item key="contactUs">
               <Link to={"/contactUs"}>Contact Us</Link>
             </Menu.Item>
-            <Menu.Item key="cart" style={{ float: "right" }}>
+            <Menu.Item
+              key="cart"
+              style={{ float: "right" }}
+              onClick={() => setDisplayCart((val) => !displayCart)}
+            >
               <ShoppingCartOutlined
-                onClick={() => setDisplayCart((val) => !displayCart)}
                 style={{ fontSize: "30px", marginTop: "10px" }}
               />
             </Menu.Item>
