@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Button, DatePicker, Form, Input, Select } from "antd";
 import "./contactUs.scss";
 import fetchCall from "../../hooks/useFetch";
-import _ from "lodash";
 export default function ContactUs() {
   const { TextArea } = Input;
   const [response, setResponse] = useState(false);
