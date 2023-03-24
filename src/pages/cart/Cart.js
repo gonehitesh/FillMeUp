@@ -47,19 +47,23 @@ export default function Cart() {
   });
 
   const onMinus = (item, quantity, index) => {
-    const vsl = { ...item, quantity: quantity - 1 };
-    cartItems[index] = vsl;
+    if (quantity > 1) {
+      const vsl = { ...item, quantity: quantity - 1 };
+      cartItems[index] = vsl;
 
-    setCartItems([...cartItems]);
-    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+      setCartItems([...cartItems]);
+      localStorage.setItem("cartItems", JSON.stringify(cartItems));
+    }
   };
 
   const onPlus = (item, quantity, index) => {
-    const vsl = { ...item, quantity: quantity + 1 };
-    cartItems[index] = vsl;
+    if (quantity < 5) {
+      const vsl = { ...item, quantity: quantity + 1 };
+      cartItems[index] = vsl;
 
-    setCartItems([...cartItems]);
-    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+      setCartItems([...cartItems]);
+      localStorage.setItem("cartItems", JSON.stringify(cartItems));
+    }
   };
 
   return (
@@ -95,7 +99,7 @@ export default function Cart() {
                       <Tooltip
                         title={
                           <>
-                            <p>{item?.calories} Calories</p>
+                            <p>Calories: {item?.calories}</p>
                             <p>
                               {item?.alergies
                                 ? "Allergies: " + item?.alergies
