@@ -1,22 +1,20 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { Card, Col, Row, Tabs } from "antd";
 import { fetchCall } from "../../hooks/useFetch";
 
 export default function Home() {
-  const location = useLocation();
   const [menu, setMenu] = useState([]);
   const [items, setItems] = useState([]);
 
   const food = [
     { key: "appetizer", label: "Appetizers" },
     { key: "main course", label: "Main Course" },
-    { key: "Soups", label: "Soups" },
-    { key: "Breads", label: "Breads" },
+    { key: "soups", label: "Soups" },
+    { key: "breads", label: "Breads" },
     { key: "sides", label: "Sides" },
     { key: "desserts", label: "Desserts" },
-    { key: "Beverages", label: "Beverages" },
+    { key: "beverages", label: "Beverages" },
   ];
 
   const handleClick = (key) => {
@@ -38,6 +36,24 @@ export default function Home() {
       console.log(error);
     }
   }, []);
+
+  const addToCart = (item) => {
+    let cartData = JSON.parse(localStorage.getItem("cartItems"));
+    const quantity = 1;
+
+    if (!cartData) {
+      cartData = [];
+    }
+    let itemIndex = cartData.findIndex((i) => i._id === item._id);
+
+    if (itemIndex !== -1) {
+      cartData[itemIndex].quantity += quantity;
+    } else {
+      cartData.push({ ...item, quantity: quantity });
+    }
+    localStorage.setItem("cartItems", JSON.stringify(cartData));
+    window.dispatchEvent(new Event("storage"));
+  };
 
   return (
     <>
@@ -64,6 +80,7 @@ export default function Home() {
             style={{ padding: "20px" }}
           >
             <Card
+              style={{ height: "100%" }}
               cover={
                 <img
                   alt={item?.itemName}
@@ -71,7 +88,12 @@ export default function Home() {
                   style={{ width: "100%", height: 170 }}
                 />
               }
-              actions={[<PlusCircleOutlined key="add" />]}
+              actions={[
+                <PlusCircleOutlined
+                  key="add"
+                  onClick={() => addToCart(item)}
+                />,
+              ]}
             >
               <Row>
                 <Col span={18}>

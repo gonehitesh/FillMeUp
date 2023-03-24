@@ -1,0 +1,41 @@
+.modifyItems{
+  padding-bottom: 50px;
+}
+.ant-card-cover {
+  display: flex;
+  justify-content: center;
+}
+
+.modelButtons{
+  display: flex;
+  justify-content: right;
+  button{
+    margin-left: 15px;
+  }
+}
+
+.editItems{
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.menuButtons{
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.selectStyles{
+  width: 250px;
+}
+
+.copyIcon:hover{
+  color: #1677FF
+}
+
+@media (max-width: 600px) {
+  .selectStyles{
+    width: 150px;
+  }
+}
