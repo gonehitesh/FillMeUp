@@ -38,7 +38,7 @@ export default function Login() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    let apiPath = "http://localhost:5000/validateuser";
+    let apiPath = "http://localhost:3002/validateuser";
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     let fetchData = {
