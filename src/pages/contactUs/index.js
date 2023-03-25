@@ -6,6 +6,10 @@ export default function ContactUs() {
   const { TextArea } = Input;
   const [response, setResponse] = useState(false);
 
+  useEffect(() => {
+    ReactGA.send({ hitType: "pageview", page: "/", title: "Home" });
+  }, [])
+
   const onFinish = (values) => {
       fetchCall(
         "contactUS",
