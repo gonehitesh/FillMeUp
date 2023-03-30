@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Col, Row, Tooltip, Button } from "antd";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 import "./cart.scss";
 import {
-  DeleteOutlined,
   InfoCircleOutlined,
   MinusCircleOutlined,
   PlusCircleOutlined,
@@ -13,6 +13,9 @@ export default function Cart() {
   const [cartItems, setCartItems] = useState([]);
   const [calories, setCalories] = useState(0);
   const [subTotal, setSubTotal] = useState(0);
+  const [estimatedTax, setEstimatedTax] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [notifyUser, setNotifyUser] = useState("");
 
   useEffect(() => {
     setCartItems(JSON.parse(localStorage.getItem("cartItems")));
@@ -25,6 +28,7 @@ export default function Cart() {
   const reviewOrder = () => {
     let calories = 0;
     let subTotal = 0;
+    let tax = 0;
 
     if (cartItems) {
       cartItems.forEach((val) => {
@@ -34,6 +38,9 @@ export default function Cart() {
     }
     setCalories(calories);
     setSubTotal(subTotal.toFixed(2));
+    tax = Number((subTotal.toFixed(2) * 0.06).toFixed(2));
+    setEstimatedTax(tax);
+    setTotal(Number(subTotal + tax));
   };
 
   const removeItem = (item) => {
@@ -69,7 +76,6 @@ export default function Cart() {
   return (
     <div className="cart-overlay">
       <div>
-        <h2>Your Cart</h2>
         {cartItems &&
           cartItems.map((item, index) => (
             <Row
@@ -172,7 +178,7 @@ export default function Cart() {
               <p>Estimated Tax</p>
             </Col>
             <Col span={9} className="rightAlign">
-              <p>TBD</p>
+              <p>{estimatedTax}</p>
             </Col>
           </Row>
           <Row>
@@ -180,10 +186,39 @@ export default function Cart() {
               <h3>Total</h3>
             </Col>
             <Col span={9} className="rightAlign">
-              <h3>${subTotal}</h3>
+              <h3>${total}</h3>
             </Col>
           </Row>
         </div>
+        {notifyUser === "" && (
+          <PayPalScriptProvider options={{ "client-id": "test" }}>
+            <PayPalButtons
+              createOrder={(data, actions) => {
+                return actions.order.create({
+                  purchase_units: [
+                    {
+                      amount: {
+                        value: total,
+                      },
+                    },
+                  ],
+                });
+              }}
+              onApprove={(data, actions) => {
+                return actions.order.capture().then((details) => {
+                  const name = details.payer.name.given_name;
+                  setNotifyUser(`Transaction completed by ${name}`);
+                });
+              }}
+            />
+          </PayPalScriptProvider>
+        )}
+        {notifyUser && (
+          <div style={{ color: "red", textAlign: "center" }}>
+            <p>{notifyUser}</p>
+            <p> We will send you the email with the order details</p>
+          </div>
+        )}
       </div>
     </div>
   );
