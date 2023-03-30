@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Col, Row, Tooltip, Button } from "antd";
+import { Col, Row, Tooltip, Button, Form, Input, Space, Alert } from "antd";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import fetchCall from "../../hooks/useFetch";
 
 import "./cart.scss";
 import {
@@ -9,6 +10,25 @@ import {
   PlusCircleOutlined,
 } from "@ant-design/icons";
 
+const formItemLayout = {
+  labelCol: {
+    xs: {
+      span: 24,
+    },
+    sm: {
+      span: 8,
+    },
+  },
+  wrapperCol: {
+    xs: {
+      span: 24,
+    },
+    sm: {
+      span: 16,
+    },
+  },
+};
+
 export default function Cart() {
   const [cartItems, setCartItems] = useState([]);
   const [calories, setCalories] = useState(0);
@@ -16,14 +36,25 @@ export default function Cart() {
   const [estimatedTax, setEstimatedTax] = useState(0);
   const [total, setTotal] = useState(0);
   const [notifyUser, setNotifyUser] = useState("");
+  const [form] = Form.useForm();
+  const [coupons, setCoupons] = useState([]);
+  const [appliedCoupon, setAppliedCoupon] = useState({});
+  const [invalidCoupon, setInvalidCoupon] = useState(false);
 
   useEffect(() => {
     setCartItems(JSON.parse(localStorage.getItem("cartItems")));
+    getCoupons();
   }, []);
 
   useEffect(() => {
     reviewOrder();
   }, [cartItems]);
+
+  const getCoupons = async () => {
+    const respose = await fetchCall("getCoupons");
+    setCoupons(respose);
+    return respose;
+  };
 
   const reviewOrder = () => {
     let calories = 0;
@@ -70,6 +101,16 @@ export default function Cart() {
 
       setCartItems([...cartItems]);
       localStorage.setItem("cartItems", JSON.stringify(cartItems));
+    }
+  };
+
+  const onFinish = (code) => {
+    let item = coupons.find((item) => item.couponCode === code.userCoupon && new Date(item.expireDate).toDateString() >= new Date().toDateString());
+    setAppliedCoupon(item);
+    if(!item){
+      setInvalidCoupon(true);
+    }else{
+      setInvalidCoupon(false);
     }
   };
 
@@ -156,6 +197,33 @@ export default function Cart() {
               </Col>
             </Row>
           ))}
+        <div>
+          <Form
+            {...formItemLayout}
+            form={form}
+            name="model"
+            onFinish={onFinish}
+            style={{
+              maxWidth: 600,
+            }}
+            scrollToFirstError
+            style={{ margin: "15px" }}
+          >
+            <Form.Item
+              name="userCoupon"
+              style={{ width: "70%" }}
+            >
+              <Space.Compact>
+                <Input placeholder="Coupon" />
+                <Button type="primary" htmlType="submit">
+                  Add
+                </Button>
+              </Space.Compact>
+            </Form.Item>
+            {appliedCoupon?.offerOver < total && <Alert message="Coupon added successfully" type="success" showIcon />}
+            {(appliedCoupon?.offerOver > total || invalidCoupon) && <Alert type="error" message="invalid coupon" banner />}
+          </Form>
+        </div>
         <div className="reviewOrder">
           <Row>
             <Col span={15}>
@@ -173,6 +241,16 @@ export default function Cart() {
               <p>${subTotal}</p>
             </Col>
           </Row>
+          {appliedCoupon?.offerOver < total && (
+            <Row>
+              <Col span={15}>
+                <p>Coupon</p>
+              </Col>
+              <Col span={9} className="rightAlign">
+                <p>-${appliedCoupon.price}</p>
+              </Col>
+            </Row>
+          )}
           <Row>
             <Col span={15}>
               <p>Estimated Tax</p>
@@ -186,32 +264,34 @@ export default function Cart() {
               <h3>Total</h3>
             </Col>
             <Col span={9} className="rightAlign">
-              <h3>${total}</h3>
+              <h3>${(appliedCoupon?.offerOver < total ? (total - appliedCoupon?.price).toFixed(2) : total)  }</h3>
             </Col>
           </Row>
         </div>
         {notifyUser === "" && (
-          <PayPalScriptProvider options={{ "client-id": "test" }}>
-            <PayPalButtons
-              createOrder={(data, actions) => {
-                return actions.order.create({
-                  purchase_units: [
-                    {
-                      amount: {
-                        value: total,
+          <div style={{ margin: "50px" }}>
+            <PayPalScriptProvider options={{ "client-id": "test" }}>
+              <PayPalButtons
+                createOrder={(data, actions) => {
+                  return actions.order.create({
+                    purchase_units: [
+                      {
+                        amount: {
+                          value: total,
+                        },
                       },
-                    },
-                  ],
-                });
-              }}
-              onApprove={(data, actions) => {
-                return actions.order.capture().then((details) => {
-                  const name = details.payer.name.given_name;
-                  setNotifyUser(`Transaction completed by ${name}`);
-                });
-              }}
-            />
-          </PayPalScriptProvider>
+                    ],
+                  });
+                }}
+                onApprove={(data, actions) => {
+                  return actions.order.capture().then((details) => {
+                    const name = details.payer.name.given_name;
+                    setNotifyUser(`Transaction completed by ${name}`);
+                  });
+                }}
+              />
+            </PayPalScriptProvider>
+          </div>
         )}
         {notifyUser && (
           <div style={{ color: "red", textAlign: "center" }}>

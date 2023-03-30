@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card, Col, Row } from "antd";
 import { fetchCall } from "../../hooks/useFetch";
+import { CopyOutlined } from "@ant-design/icons";
 
 export default function Coupons() {
   const [coupons, setCoupons] = useState([]);
@@ -50,8 +51,17 @@ export default function Coupons() {
               description={
                 <>
                   <p>{item?.description}</p>
-                  <p>Coupon Code: {item?.couponCode}</p>
+                  <p>
+                    Coupon Code: <b>{item?.couponCode}{" "}</b>
+                    <CopyOutlined
+                      className="copyIcon"
+                      onClick={() =>
+                        navigator.clipboard.writeText(item?.couponCode)
+                      }
+                    />
+                  </p>
                   <p>Expire Date: {item?.expireDate}</p>
+                  <p>For Orders Over: ${item?.offerOver}</p>
                 </>
               }
             />
