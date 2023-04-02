@@ -8,9 +8,6 @@ import NavBar from "./pages/navBar";
 import Coupons from "./pages/coupons";
 import ContactUs from "./pages/contactUs";
 import Footer from "./pages/footer/Footer";
-import ReactGA from 'react-ga';
-
-ReactGA.initialize('G-RC5E630KV1');
 
 export default function Router() {
   return (

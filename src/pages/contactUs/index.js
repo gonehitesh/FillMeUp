@@ -2,15 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Button, DatePicker, Form, Input, Select } from "antd";
 import "./contactUs.scss";
 import fetchCall from "../../hooks/useFetch";
-import ReactGA from 'react-ga';
 
 export default function ContactUs() {
   const { TextArea } = Input;
   const [response, setResponse] = useState(false);
-
-  useEffect(() => {
-    ReactGA.send({ hitType: "pageview", page: "/", title: "Home" });
-  }, [])
 
   const onFinish = (values) => {
       fetchCall(
