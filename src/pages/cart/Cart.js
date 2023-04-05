@@ -105,13 +105,32 @@ export default function Cart() {
   };
 
   const onFinish = (code) => {
-    let item = coupons.find((item) => item.couponCode === code.userCoupon && new Date(item.expireDate).toDateString() >= new Date().toDateString());
+    let item = coupons.find(
+      (item) =>
+        item.couponCode === code.userCoupon &&
+        new Date(item.expireDate).toDateString() >= new Date().toDateString()
+    );
     setAppliedCoupon(item);
-    if(!item){
+    if (!item) {
       setInvalidCoupon(true);
-    }else{
+    } else {
       setInvalidCoupon(false);
     }
+  };
+
+  const analytics = () => {
+    //  if(notifyUser !== ""){
+    let data = {
+      order: JSON.stringify(cartItems),
+      couponCode:
+        appliedCoupon?.offerOver < total ? appliedCoupon.couponCode : "",
+      price:
+        appliedCoupon?.offerOver < total
+          ? (total - appliedCoupon?.price).toFixed(2)
+          : total,
+    };
+    fetchCall("addOrders", "POST", data);
+    //  }
   };
 
   return (
@@ -209,10 +228,7 @@ export default function Cart() {
             scrollToFirstError
             style={{ margin: "15px" }}
           >
-            <Form.Item
-              name="userCoupon"
-              style={{ width: "70%" }}
-            >
+            <Form.Item name="userCoupon" style={{ width: "70%" }}>
               <Space.Compact>
                 <Input placeholder="Coupon" />
                 <Button type="primary" htmlType="submit">
@@ -220,8 +236,16 @@ export default function Cart() {
                 </Button>
               </Space.Compact>
             </Form.Item>
-            {appliedCoupon?.offerOver < total && <Alert message="Coupon added successfully" type="success" showIcon />}
-            {(appliedCoupon?.offerOver > total || invalidCoupon) && <Alert type="error" message="invalid coupon" banner />}
+            {appliedCoupon?.offerOver < total && (
+              <Alert
+                message="Coupon added successfully"
+                type="success"
+                showIcon
+              />
+            )}
+            {(appliedCoupon?.offerOver > total || invalidCoupon) && (
+              <Alert type="error" message="invalid coupon" banner />
+            )}
           </Form>
         </div>
         <div className="reviewOrder">
@@ -264,7 +288,12 @@ export default function Cart() {
               <h3>Total</h3>
             </Col>
             <Col span={9} className="rightAlign">
-              <h3>${(appliedCoupon?.offerOver < total ? (total - appliedCoupon?.price).toFixed(2) : total)  }</h3>
+              <h3>
+                $
+                {appliedCoupon?.offerOver < total
+                  ? (total - appliedCoupon?.price).toFixed(2)
+                  : total}
+              </h3>
             </Col>
           </Row>
         </div>
@@ -277,13 +306,17 @@ export default function Cart() {
                     purchase_units: [
                       {
                         amount: {
-                          value: total,
+                          value: (appliedCoupon?.offerOver < total
+                            ? (total - appliedCoupon?.price).toFixed(2)
+                            : total
+                          ).toFixed(2),
                         },
                       },
                     ],
                   });
                 }}
                 onApprove={(data, actions) => {
+                  analytics();
                   return actions.order.capture().then((details) => {
                     const name = details.payer.name.given_name;
                     setNotifyUser(`Transaction completed by ${name}`);
