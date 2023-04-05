@@ -2,15 +2,10 @@ import { useEffect, useState } from "react";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { Card, Col, Row, Tabs } from "antd";
 import { fetchCall } from "../../hooks/useFetch";
-import ReactGA from 'react-ga';
 
 export default function Home() {
   const [menu, setMenu] = useState([]);
   const [items, setItems] = useState([]);
-
-  useEffect(() => {
-    ReactGA.send({ hitType: "pageview", page: "/", title: "Home" });
-  }, [])
   
   const food = [
     { key: "appetizer", label: "Appetizers" },

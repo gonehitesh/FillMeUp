@@ -1,30 +1,65 @@
 import React, { useState, useEffect } from "react";
-import { Col, Row, Tooltip, Button } from "antd";
+import { Col, Row, Tooltip, Button, Form, Input, Space, Alert } from "antd";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import fetchCall from "../../hooks/useFetch";
 
 import "./cart.scss";
 import {
-  DeleteOutlined,
   InfoCircleOutlined,
   MinusCircleOutlined,
   PlusCircleOutlined,
 } from "@ant-design/icons";
 
+const formItemLayout = {
+  labelCol: {
+    xs: {
+      span: 24,
+    },
+    sm: {
+      span: 8,
+    },
+  },
+  wrapperCol: {
+    xs: {
+      span: 24,
+    },
+    sm: {
+      span: 16,
+    },
+  },
+};
+
 export default function Cart() {
   const [cartItems, setCartItems] = useState([]);
   const [calories, setCalories] = useState(0);
   const [subTotal, setSubTotal] = useState(0);
+  const [estimatedTax, setEstimatedTax] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [notifyUser, setNotifyUser] = useState("");
+  const [form] = Form.useForm();
+  const [coupons, setCoupons] = useState([]);
+  const [appliedCoupon, setAppliedCoupon] = useState({});
+  const [invalidCoupon, setInvalidCoupon] = useState(false);
 
   useEffect(() => {
     setCartItems(JSON.parse(localStorage.getItem("cartItems")));
+    getCoupons();
   }, []);
 
   useEffect(() => {
     reviewOrder();
   }, [cartItems]);
 
+  const getCoupons = async () => {
+    const respose = await fetchCall("getCoupons");
+    setCoupons(respose);
+    return respose;
+  };
+
   const reviewOrder = () => {
     let calories = 0;
     let subTotal = 0;
+    let tax = 0;
 
     if (cartItems) {
       cartItems.forEach((val) => {
@@ -34,6 +69,9 @@ export default function Cart() {
     }
     setCalories(calories);
     setSubTotal(subTotal.toFixed(2));
+    tax = Number((subTotal.toFixed(2) * 0.06).toFixed(2));
+    setEstimatedTax(tax);
+    setTotal(Number(subTotal + tax));
   };
 
   const removeItem = (item) => {
@@ -66,10 +104,38 @@ export default function Cart() {
     }
   };
 
+  const onFinish = (code) => {
+    let item = coupons.find(
+      (item) =>
+        item.couponCode === code.userCoupon &&
+        new Date(item.expireDate).toDateString() >= new Date().toDateString()
+    );
+    setAppliedCoupon(item);
+    if (!item) {
+      setInvalidCoupon(true);
+    } else {
+      setInvalidCoupon(false);
+    }
+  };
+
+  const analytics = () => {
+    //  if(notifyUser !== ""){
+    let data = {
+      order: JSON.stringify(cartItems),
+      couponCode:
+        appliedCoupon?.offerOver < total ? appliedCoupon.couponCode : "",
+      price:
+        appliedCoupon?.offerOver < total
+          ? (total - appliedCoupon?.price).toFixed(2)
+          : total,
+    };
+    fetchCall("addOrders", "POST", data);
+    //  }
+  };
+
   return (
     <div className="cart-overlay">
       <div>
-        <h2>Your Cart</h2>
         {cartItems &&
           cartItems.map((item, index) => (
             <Row
@@ -150,6 +216,38 @@ export default function Cart() {
               </Col>
             </Row>
           ))}
+        <div>
+          <Form
+            {...formItemLayout}
+            form={form}
+            name="model"
+            onFinish={onFinish}
+            style={{
+              maxWidth: 600,
+            }}
+            scrollToFirstError
+            style={{ margin: "15px" }}
+          >
+            <Form.Item name="userCoupon" style={{ width: "70%" }}>
+              <Space.Compact>
+                <Input placeholder="Coupon" />
+                <Button type="primary" htmlType="submit">
+                  Add
+                </Button>
+              </Space.Compact>
+            </Form.Item>
+            {appliedCoupon?.offerOver < total && (
+              <Alert
+                message="Coupon added successfully"
+                type="success"
+                showIcon
+              />
+            )}
+            {(appliedCoupon?.offerOver > total || invalidCoupon) && (
+              <Alert type="error" message="invalid coupon" banner />
+            )}
+          </Form>
+        </div>
         <div className="reviewOrder">
           <Row>
             <Col span={15}>
@@ -167,12 +265,22 @@ export default function Cart() {
               <p>${subTotal}</p>
             </Col>
           </Row>
+          {appliedCoupon?.offerOver < total && (
+            <Row>
+              <Col span={15}>
+                <p>Coupon</p>
+              </Col>
+              <Col span={9} className="rightAlign">
+                <p>-${appliedCoupon.price}</p>
+              </Col>
+            </Row>
+          )}
           <Row>
             <Col span={15}>
               <p>Estimated Tax</p>
             </Col>
             <Col span={9} className="rightAlign">
-              <p>TBD</p>
+              <p>{estimatedTax}</p>
             </Col>
           </Row>
           <Row>
@@ -180,10 +288,50 @@ export default function Cart() {
               <h3>Total</h3>
             </Col>
             <Col span={9} className="rightAlign">
-              <h3>${subTotal}</h3>
+              <h3>
+                $
+                {appliedCoupon?.offerOver < total
+                  ? (total - appliedCoupon?.price).toFixed(2)
+                  : total}
+              </h3>
             </Col>
           </Row>
         </div>
+        {notifyUser === "" && (
+          <div style={{ margin: "50px" }}>
+            <PayPalScriptProvider options={{ "client-id": "test" }}>
+              <PayPalButtons
+                createOrder={(data, actions) => {
+                  return actions.order.create({
+                    purchase_units: [
+                      {
+                        amount: {
+                          value: (appliedCoupon?.offerOver < total
+                            ? (total - appliedCoupon?.price).toFixed(2)
+                            : total
+                          ).toFixed(2),
+                        },
+                      },
+                    ],
+                  });
+                }}
+                onApprove={(data, actions) => {
+                  analytics();
+                  return actions.order.capture().then((details) => {
+                    const name = details.payer.name.given_name;
+                    setNotifyUser(`Transaction completed by ${name}`);
+                  });
+                }}
+              />
+            </PayPalScriptProvider>
+          </div>
+        )}
+        {notifyUser && (
+          <div style={{ color: "red", textAlign: "center" }}>
+            <p>{notifyUser}</p>
+            <p> We will send you the email with the order details</p>
+          </div>
+        )}
       </div>
     </div>
   );
