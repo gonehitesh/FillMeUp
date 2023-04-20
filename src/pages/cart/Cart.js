@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Col, Row, Tooltip, Button, Form, Input, Space, Alert } from "antd";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import fetchCall from "../../hooks/useFetch";
+import { useNavigate } from "react-router-dom";
 
 import "./cart.scss";
 import {
@@ -40,6 +41,7 @@ export default function Cart() {
   const [coupons, setCoupons] = useState([]);
   const [appliedCoupon, setAppliedCoupon] = useState({});
   const [invalidCoupon, setInvalidCoupon] = useState(false);
+  const history = useNavigate();
 
   useEffect(() => {
     setCartItems(JSON.parse(localStorage.getItem("cartItems")));
@@ -251,6 +253,13 @@ export default function Cart() {
         <div className="reviewOrder">
           <Row>
             <Col span={15}>
+              <p>
+                Check delivery time <a href="/GoogleMaps">here</a>
+              </p>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={15}>
               <p>Total Calories</p>
             </Col>
             <Col span={9} className="rightAlign">
@@ -317,6 +326,9 @@ export default function Cart() {
                 }}
                 onApprove={(data, actions) => {
                   analytics();
+                  history("/GoogleMaps", {
+                    state: { user: true },
+                  });
                   return actions.order.capture().then((details) => {
                     const name = details.payer.name.given_name;
                     setNotifyUser(`Transaction completed by ${name}`);

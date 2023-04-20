@@ -2,11 +2,11 @@ export const fetchCall = async (apiPath, reqMethod, formBody) => {
   let myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
-  let baseUrl = "https://fillmeupserver.herokuapp.com/"
-  let localUrl = "http://localhost:3002/"
+  let baseUrl = "https://fillmeupserver.herokuapp.com/";
+  let localUrl = "http://localhost:3002/";
 
   if (!reqMethod && reqMethod !== "POST") {
-    return await fetch(`${baseUrl}${apiPath}`, {
+    return await fetch(`${localUrl}${apiPath}`, {
       method: "GET",
       headers: myHeaders,
     })
@@ -21,7 +21,7 @@ export const fetchCall = async (apiPath, reqMethod, formBody) => {
         body: JSON.stringify(formBody),
         headers: myHeaders,
       };
-      return await fetch(`${baseUrl}${apiPath}`, fetchData)
+      return await fetch(`${localUrl}${apiPath}`, fetchData)
         .then((response) => response.json())
         .catch((error) => {
           console.log("error fetching", error);

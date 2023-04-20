@@ -9,6 +9,7 @@ import Coupons from "./pages/coupons";
 import ContactUs from "./pages/contactUs";
 import Footer from "./pages/footer/Footer";
 import Analytics from "./pages/analytics/Analytics";
+import GoogleMaps from "./components/GoogleMaps";
 
 export default function Router() {
   return (
@@ -22,6 +23,7 @@ export default function Router() {
         <Route exact path="/coupons" element={<Coupons />} />
         <Route exact path="/contactUs" element={<ContactUs />} />
         <Route exact path="/analytics" element={<Analytics />} />
+        <Route exact path="/googleMaps" element={<GoogleMaps />} />
       </Routes>
       <Footer />
     </BrowserRouter>
